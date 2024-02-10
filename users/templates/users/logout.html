@@ -1,0 +1,14 @@
+{% extends 'tm_app/base.html' %}
+
+{% block head %}
+    <title>Logout</title>
+{% endblock %}
+
+{% block content %}
+    <h2>Logout</h2>
+    <form action="{% url 'logout' %}" method="POST">
+        {% csrf_token %}
+        <h4 class="form_alert">Are you sure you want to log out?</h4>
+        <button type="submit" class="btn btn-outline-danger btn-sm">Logout</button>
+    </form>
+{% endblock content %}

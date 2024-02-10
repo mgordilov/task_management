@@ -1,0 +1,46 @@
+{% extends 'tm_app/base.html' %}
+
+{% block head %}
+    <title>Tasks</title>
+{% endblock %}
+
+{% block content %}
+    <legend class="border-bottom mb-4">Open tasks</legend>
+    {% if user.is_superuser or user.userprofile.is_manager %}
+        <a href="{% url 'task_create' %}">Create Task</a>
+    {% endif %}
+    <div class="grid_list">
+        {% for task in task_list %}
+            {% if not task.is_completed %}
+                <div class="card" style="width: 18rem;">
+                    <div class="card-body" id="task_card" data-url-task="{% url 'task_detail' task.id %}"       onclick="openTask(event)">
+                        <h5 class="card-title">{{ task.name }}</h5>
+                        <h6 class="card-subtitle mb-2 text-body-secondary">{{ task.managed_by}}</h6>
+                        <p class="card-text">{{ task.description }}</p>
+                        {% if request.user == task.managed_by or user.is_superuser %}
+                            <a href="{% url 'task_delete' task.id %}" class="card-link">Delete</a>
+                        {% endif %}
+                    </div>
+                </div>
+            {% endif %}
+        {% endfor %}
+    </div>
+    <br>
+    <legend class="border-bottom mb-4">Completed tasks</legend>
+    <div class="grid_list">
+        {% for task in task_list %}
+            {% if task.is_completed %}
+                <div class="card" style="width: 18rem;">
+                    <div class="card-body" id="task_card" data-url-task="{% url 'task_detail' task.id %}"       onclick="openTask(event)">
+                        <h5 class="card-title">{{ task.name }}</h5>
+                        <h6 class="card-subtitle mb-2 text-body-secondary">{{ task.managed_by}}</h6>
+                        <p class="card-text">{{ task.description }}</p>
+                        {% if request.user == task.managed_by or user.is_superuser %}
+                            <a href="{% url 'task_delete' task.id %}" class="card-link">Delete</a>
+                        {% endif %}
+                    </div>
+                </div>
+            {% endif %}
+        {% endfor %}
+    </div>
+{% endblock %}

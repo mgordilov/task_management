@@ -1,0 +1,63 @@
+{% extends 'tm_app/base.html' %}
+
+{% block head %}
+    <title>{{ user.first_name }} {{ user.last_name }}</title>
+{% endblock %}
+
+{% block content %}
+    <legend class="border-bottom mb-4">Your profile</legend>
+    <div class="profile_page">
+        <img src="{{ user.userprofile.image.url }}" alt="{{ user.first_name }} {{ user.last_name }}" id="profile_picture">
+        <div class="profile_info">
+            <h3>{{ user.first_name }} {{ user.last_name }}</h3>
+            <br>
+            <h5 class="profile_details">Username: {{ user.username }}</h5>
+            <h5 class="profile_details">Email: {{ user.email }}</h5>
+            <h5 class="profile_details">Current department: {{ user.userprofile.department }}</h5>
+            <a href="{% url 'profile_update' user.id %}" class="btn btn-outline-primary">Update profile</a>
+        </div>
+    </div>
+    <br>
+    {% if tasks %}
+        <legend class="border-bottom mb-4">Your open tasks:</legend>
+        <div class="grid_list">
+            {% for task in tasks %}
+                {% if not task.is_completed %}
+                    <div class="card" style="width: 18rem;">
+                        <div class="card-body" id="task_card" data-url-task="{% url 'task_detail' task.id %}"   onclick="openTask(event)">
+                            <h5 class="card-title">{{ task.name }}</h5>
+                            <h6 class="card-subtitle mb-2 text-body-secondary">{{ task.managed_by}}</h6>
+                            <p class="card-text">{{ task.description }}</p>
+                            {% if request.user == task.managed_by or user.is_superuser %}
+                                <a href="{% url 'task_delete' task.id %}" class="card-link">Delete</a>
+                            {% endif %}
+                        </div>
+                    </div>
+                {% endif %}
+            {% endfor %}
+        </div>
+        <br>
+        <legend class="border-bottom mb-4">Your completed tasks:</legend>
+        <div class="grid_list">
+            {% for task in tasks %}
+                {% if task.is_completed %}
+                    <div class="card" style="width: 18rem;">
+                        <div class="card-body" id="task_card" data-url-task="{% url 'task_detail' task.id %}"   onclick="openTask(event)">
+                            <h5 class="card-title">{{ task.name }}</h5>
+                            <h6 class="card-subtitle mb-2 text-body-secondary">{{ task.managed_by}}</h6>
+                            <p class="card-text">{{ task.description }}</p>
+                            {% if request.user == task.managed_by or user.is_superuser %}
+                                <a href="{% url 'task_delete' task.id %}" class="card-link">Delete</a>
+                            {% endif %}
+                        </div>
+                    </div>
+                {% else %}
+                    <p>Seems you haven't completed any tasks yet. But you can complete one from the <a href="{% url 'task_view' %}">task list</a></p>
+                {% endif %}
+            {% endfor %}
+        </div>
+    {% else %}
+        <p>Seems you haven't taken any tasks yet. But you can take one from the <a href="{% url 'task_view' %}">task list</a></p>
+    {% endif %}
+    
+{% endblock %}

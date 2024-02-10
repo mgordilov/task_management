@@ -1,0 +1,9 @@
+{% extends 'tm_app/base.html' %}
+{% block content %}
+    <h2>Department Delete</h2>
+    <form method="POST">
+        {% csrf_token %}
+        <h4 class="form_alert">Are you sure you want to delete "{{ object.name }}" department?</h4>
+        <button type="submit" class="btn btn-outline-danger btn-sm">Delete</button>
+    </form>
+{% endblock %}

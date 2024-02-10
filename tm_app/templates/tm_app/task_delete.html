@@ -1,0 +1,15 @@
+{% extends 'tm_app/base.html' %}
+
+{% block head %}
+    <title>Delete - {{ task.name }}</title>
+{% endblock %}
+
+{% block content %}
+    <h2>Delete Task</h2>
+    <form method="POST">
+        {% csrf_token %}
+        <h4 class="form_alert">Are you sure you want to delete "{{ task.name }}" task?</h4>
+        <button type="submit" class="btn btn-outline-danger btn-sm">Delete</button>
+        <input type="button" class="btn btn-outline-danger btn-sm" value="Cancel" onclick="window.history.back()">
+    </form>
+{% endblock %}

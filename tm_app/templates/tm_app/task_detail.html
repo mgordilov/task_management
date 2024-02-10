@@ -1,0 +1,72 @@
+{% extends 'tm_app/base.html' %}
+
+{% block head %}
+    <title>{{ task.name }}</title>
+{% endblock %}
+
+{% block content %}
+    <legend class="border-bottom mb-4">Task Details</legend>
+    <h3>{{ task.name }}</h3>
+    {% if not task.is_completed %}
+        {% if user.is_superuser or user.userprofile.is_manager %}
+            <a href="{% url 'task_update' task.id %}">Update</a>
+            <a href="{% url 'task_delete' task.id %}">Delete</a>
+        {% endif %}
+    {% endif %}
+    <p class="task_muted"><strong>Department:</strong> {{ task.department }}</p>
+    <p class="task_muted"><strong>Managed by:</strong> {{ task.managed_by.first_name }} {{ task.managed_by.last_name }}</p>
+    <br>
+    <h4>Todo:</h4>
+    <p>{{ task.description }}</p>
+    {% if not task.is_completed %}
+        {% if request.user != task.managed_by %}
+            {% if user in task.assigned_to.all %}
+                <form action="{% url 'unassign_task' task.id %}" method="post">
+                {% csrf_token %}
+                    <button type="submit" class="btn btn-outline-danger btn-sm">Unassign task</button>
+                </form>
+            {% else %}
+                <form action="{% url 'assign_task' task.id %}" method="post">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-outline-info btn-sm">Assign to me</button>
+                </form>
+            {% endif %}
+        {% endif %}
+    {% endif %}
+    {% if not task.is_completed %}
+        {% if request.user == task.managed_by or user in task.assigned_to.all or user.is_superuser %}
+            <form action="{% url 'markAsCompleted' task.id %}" method="GET">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-outline-success btn-sm">Mark as completed</button>
+            </form>
+        {% endif %}
+    {% endif %}
+    <br>
+    <hr>
+    {% if task.assigned_to.all %}
+        {% if task.is_completed %}
+            <h3>Completed by:</h3>
+        {% else %}
+            <h3>Currently working on the task:</h3>
+        {% endif %}
+        <div class="grid_list">
+            {% for worker in task.assigned_to.all %}
+                <div class="card mb-3" style="max-width: 25em">
+                    <div class="row g-0">
+                        <div class="col-md-4" style="display: flex; justify-content: center; align-items: center;">
+                            <img src="{{ worker.userprofile.image.url }}" class="img-fluid rounded-start" alt="{{ worker.first_name }} {{ worker.last_name }}" id="worker_photo">
+                        </div>
+                        <div class="col-md-8">
+                            <div class="card-body">
+                                <h5 class="card-title">{{ worker.first_name }} {{ worker.last_name }}</h5>
+                                <p class="card-text"><strong>Email:</strong> {{ worker.email }}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <h3>Oops! No one took this task.</h3>
+    {% endif %}
+{% endblock %}

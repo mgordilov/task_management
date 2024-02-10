@@ -1,0 +1,27 @@
+{% extends 'tm_app/base.html' %}
+
+{% block head %}
+    <title>Staff</title>
+{% endblock %}
+
+{% block content %}
+<legend class="border-bottom mb-4">Meet our team</legend>
+
+{% for department in departments %}
+    <legend class="border-bottom mb-4" id="department_name">{{ department.name }} department</legend>
+    <div class="grid_list">
+        {% for user in users %}
+            {% if user.userprofile.department == department %}
+                <div class="card" style="width: 18rem;">
+                    <img src="{{ user.userprofile.image.url }}" class="card-img-top" id="card_photo" alt="  {{    user.username }}">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ user.first_name }} {{ user.last_name }}</h5>
+                        <p class="card-text"><strong>Department:</strong> {{ user.userprofile.department }}</p>
+                        <p class="card-text"><strong>Email:</strong> {{ user.email }}</p>
+                    </div>
+                </div>
+            {% endif %}
+        {% endfor %}
+    </div>
+{% endfor %}
+{% endblock %}
