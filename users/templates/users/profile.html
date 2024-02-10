@@ -19,6 +19,9 @@
                 <h5 class="profile_details">Company CEO</h5>
             {% endif %}
             <a href="{% url 'profile_update' user.id %}" class="btn btn-outline-primary">Update profile</a>
+            {% if user.is_superuser %}
+                <a href="{% url 'admin' %}" class="btn btn-outline-danger">Admin panel</a>
+            {% endif %}
         </div>
     </div>
     <br>
