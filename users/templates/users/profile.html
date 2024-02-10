@@ -13,7 +13,10 @@
             <br>
             <h5 class="profile_details">Username: {{ user.username }}</h5>
             <h5 class="profile_details">Email: {{ user.email }}</h5>
-            <h5 class="profile_details">Current department: {{ user.userprofile.department }}</h5>
+            {% if not user.is_superuser %}
+                <h5 class="profile_details">Current department: {{ user.userprofile.department }}</h5>
+            {% else %}
+                <h5 class="profile_details">Company CEO</h5>
             <a href="{% url 'profile_update' user.id %}" class="btn btn-outline-primary">Update profile</a>
         </div>
     </div>
