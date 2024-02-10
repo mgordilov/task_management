@@ -17,6 +17,7 @@
                 <h5 class="profile_details">Current department: {{ user.userprofile.department }}</h5>
             {% else %}
                 <h5 class="profile_details">Company CEO</h5>
+            {% endif %}
             <a href="{% url 'profile_update' user.id %}" class="btn btn-outline-primary">Update profile</a>
         </div>
     </div>
